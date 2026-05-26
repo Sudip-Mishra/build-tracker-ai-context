@@ -44,65 +44,61 @@ Store the token in a secure location (password manager recommended). You'll need
    - **Context Name**: Build Tracker Context
 2. Click to open the context
 
-## Step 3: Configure Git Ingestion Source
+## Step 3: Configure GitHub Ingestion Source
 
-### 3.1 Add New Ingestion Source
+### 3.1 Add New Connector
 
-1. In your context, navigate to **"Ingestion Sources"** or **"Data Sources"**
-2. Click **"Add Source"** or **"Configure New Source"**
-3. Select **"Git"** as the source type
+1. In your context, navigate to **"Sources"** or **"Connectors"**
+2. Click **"Add New Connector"** button
+3. From the **Data Source** dropdown, select **"GitHub"**
 
-### 3.2 Configure Source Settings
+### 3.2 Configure GitHub Connector
 
-Fill in the following details:
+Fill in the following fields:
 
-| Field | Value |
-|-------|-------|
-| **Source ID** | `src_build_tracker_git` |
-| **Source Name** | Build Tracker Git Repository |
-| **Source Type** | Git |
-| **Repository URL** | `https://github.com/Sudip-Mishra/build-tracker-ai-context` |
-| **Branch** | `main` |
-| **Path to Monitor** | `context-exports/` |
-| **Authentication Type** | Personal Access Token |
-| **Token** | Paste your GitHub token from Step 1 |
-| **Polling Interval** | 5 minutes (or configure webhook) |
-| **Auto-ingest** | Enabled |
+| Field | Value | Notes |
+|-------|-------|-------|
+| **Access Token** | Paste your GitHub token from Step 1 | Format: `ghp_xxxx...` |
+| **Repository URL** | `https://github.com/Sudip-Mishra/build-tracker-ai-context` | Full repository URL |
+| **Re-ingestion Required** | ☑️ Checked | Enable to allow re-ingestion of files |
 
-### 3.3 Advanced Settings (Optional)
+**Important Notes:**
+- The Repository URL should be the full GitHub URL (not just owner/repo)
+- Make sure the Access Token has `repo` scope
+- Re-ingestion checkbox allows Context Studio to re-process files when they change
 
-- **File Patterns**: `*.jsonld` (to only ingest JSON-LD files)
-- **Exclude Patterns**: `*.tmp, *.log`
-- **Max File Size**: 10 MB
-- **Concurrent Ingestions**: 3
+### 3.3 Save Configuration
 
-### 3.4 Test Connection
-
-1. Click **"Test Connection"** button
-2. Verify that Context Studio can access your repository
-3. Expected result: ✅ "Connection successful"
-
-### 3.5 Save Configuration
-
-1. Review all settings
-2. Click **"Save"** or **"Create Source"**
+1. Review all settings carefully
+2. Click **"Save"** or **"Create Connector"**
 3. Wait for confirmation message
+4. The connector should now appear in your sources list
 
-## Step 4: Verify Ingestion Source
+### 3.4 Verify Connector Status
 
-### 4.1 Check Source Status
+After saving:
+1. Check the connector status - should show **"Active"** or **"Connected"**
+2. If there's an error, verify:
+   - GitHub token is valid and not expired
+   - Repository URL is correct
+   - Token has `repo` scope permissions
 
-1. Navigate back to **"Ingestion Sources"**
-2. Find your newly created source: `src_build_tracker_git`
-3. Verify status shows: **"Active"** or **"Ready"**
+## Step 4: Verify GitHub Connector
 
-### 4.2 View Source Details
+### 4.1 Check Connector Status
 
-Click on the source to view:
-- Last sync time
-- Files discovered
-- Ingestion history
-- Error logs (if any)
+1. Navigate back to **"Sources"** or **"Connectors"** list
+2. Find your newly created GitHub connector
+3. Verify status shows: **"Active"** or **"Connected"**
+4. If status shows error, click on it to see error details
+
+### 4.2 Initial Sync
+
+After creating the connector:
+1. Context Studio will automatically scan your repository
+2. It will discover files in the `context-exports/` directory
+3. This initial scan may take 1-2 minutes
+4. Check the connector details to see discovered files
 
 ## Step 5: Initial Data Upload
 
@@ -179,27 +175,58 @@ curl -X POST http://localhost:3000/api/context-studio/query \
 
 Expected: Results containing your uploaded RICE objects
 
-## Step 7: Configure Webhooks (Optional)
+## Step 7: Quick Start Guide
 
-For real-time ingestion instead of polling:
+Once your GitHub connector is configured, here's how to use it:
 
-### 7.1 GitHub Webhook Setup
+### 7.1 Upload Schema (One-time)
 
-1. Go to your GitHub repository settings
-2. Navigate to **"Webhooks"** → **"Add webhook"**
-3. Configure:
-   - **Payload URL**: `https://context-studio.ibm.com/api/webhooks/git/[your-webhook-id]`
-   - **Content type**: `application/json`
-   - **Events**: Select "Push" events
-   - **Active**: ✅ Enabled
-4. Save webhook
+```bash
+# Start the backend server
+cd backend
+npm start
 
-### 7.2 Update Context Studio
+# Upload schema (in another terminal)
+curl -X POST http://localhost:3000/api/context-studio/upload-schema
+```
 
-1. In Context Studio ingestion source settings
-2. Enable **"Webhook Mode"**
-3. Copy the webhook URL and secret
-4. Update GitHub webhook with the secret
+**What happens:**
+1. Schema file is written to `context-exports/schema/`
+2. Changes are committed and pushed to GitHub
+3. Ingestion event is triggered
+4. Context Studio detects the new file and ingests it
+
+### 7.2 Upload Data (Anytime)
+
+```bash
+# Upload your RICE objects
+curl -X POST http://localhost:3000/api/context-studio/upload-data
+```
+
+**What happens:**
+1. Data file is written to `context-exports/data/`
+2. Changes are committed and pushed to GitHub
+3. Ingestion event is triggered
+4. Context Studio ingests and indexes the data
+
+### 7.3 Query Data (After 2-3 minutes)
+
+```bash
+# Query your data
+curl -X POST http://localhost:3000/api/context-studio/query \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Show me all RICE objects"}'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "question": "Show me all RICE objects",
+  "answer": "**REPORT-001 - Customer Report**\n...",
+  "contextId": "ctx_0285e494930b"
+}
+```
 
 ## Troubleshooting
 
