@@ -59,8 +59,9 @@ Now run the test commands one by one:
 
 #### Test 1: Upload Schema
 
+**Use this PowerShell command:**
 ```powershell
-curl -X POST http://localhost:3000/api/context-studio/upload-schema
+Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/upload-schema" -Method Post
 ```
 
 **Expected Response:**
@@ -83,8 +84,9 @@ curl -X POST http://localhost:3000/api/context-studio/upload-schema
 
 #### Test 2: Upload Data
 
+**Use this PowerShell command:**
 ```powershell
-curl -X POST http://localhost:3000/api/context-studio/upload-data
+Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/upload-data" -Method Post
 ```
 
 **Expected Response:**
@@ -123,11 +125,7 @@ You can check the progress in Context Studio:
 
 #### Test 4: Query the Data
 
-```powershell
-curl -X POST http://localhost:3000/api/context-studio/query -H "Content-Type: application/json" -d '{\"question\": \"Show me all RICE objects\"}'
-```
-
-**Note for PowerShell:** If the above doesn't work, use this format:
+**Use this PowerShell command:**
 ```powershell
 $body = @{
     question = "Show me all RICE objects"
@@ -225,20 +223,21 @@ npm start
 # Keep running!
 ```
 
-### Terminal 2 (Tests)
+### Terminal 2 (Tests - PowerShell Commands)
 ```powershell
 cd C:\Users\SudipMishra\Documents\build-tracker-ai-context
 
 # Test 1: Upload Schema
-curl -X POST http://localhost:3000/api/context-studio/upload-schema
+Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/upload-schema" -Method Post
 
 # Test 2: Upload Data
-curl -X POST http://localhost:3000/api/context-studio/upload-data
+Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/upload-data" -Method Post
 
 # Wait 2-3 minutes...
 
 # Test 3: Query
-curl -X POST http://localhost:3000/api/context-studio/query -H "Content-Type: application/json" -d '{\"question\": \"Show me all RICE objects\"}'
+$body = @{ question = "Show me all RICE objects" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/query" -Method Post -Body $body -ContentType "application/json"
 ```
 
 ---
