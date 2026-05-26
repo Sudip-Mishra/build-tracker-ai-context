@@ -1,0 +1,425 @@
+{
+  "@context": "build-tracker-schema.jsonld",
+  "@graph": [
+    {
+      "@id": "bt:object-001",
+      "@type": "bt:Report",
+      "bt:riceId": "R-001",
+      "bt:objectName": "iProcurement Requisition Status Report",
+      "bt:objectType": "bt:Report",
+      "bt:progress": 75,
+      "bt:status": "bt:InProgress",
+      "bt:description": "Custom report showing iProcurement requisition status with approval hierarchy and buyer assignments",
+      "bt:startDate": "2026-04-01",
+      "bt:targetDate": "2026-05-30",
+      "bt:reportType": "OPERATIONAL",
+      "bt:outputFormat": "PDF",
+      "bt:hasFile": [
+        "bt:file-001",
+        "bt:file-002",
+        "bt:file-003",
+        "bt:file-004"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-001",
+        "bt:resource-002"
+      ]
+    },
+    {
+      "@id": "bt:object-002",
+      "@type": "bt:Interface",
+      "bt:riceId": "I-002",
+      "bt:objectName": "PO to External Vendor System Interface",
+      "bt:objectType": "bt:Interface",
+      "bt:progress": 45,
+      "bt:status": "bt:InProgress",
+      "bt:description": "Outbound interface to send PO data to external vendor portal via REST API",
+      "bt:startDate": "2026-03-15",
+      "bt:targetDate": "2026-06-15",
+      "bt:interfaceType": "OUTBOUND",
+      "bt:protocol": "REST",
+      "bt:sourceSystem": "Oracle EBS R12.2",
+      "bt:targetSystem": "External Vendor Portal",
+      "bt:hasFile": [
+        "bt:file-005",
+        "bt:file-006",
+        "bt:file-007",
+        "bt:file-008",
+        "bt:file-009"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-003",
+        "bt:resource-004"
+      ]
+    },
+    {
+      "@id": "bt:object-003",
+      "@type": "bt:Conversion",
+      "bt:riceId": "C-003",
+      "bt:objectName": "Legacy Supplier Data Migration",
+      "bt:objectType": "bt:Conversion",
+      "bt:progress": 90,
+      "bt:status": "bt:Testing",
+      "bt:description": "One-time conversion to migrate supplier master data from legacy system to AP_SUPPLIERS and PO_VENDORS",
+      "bt:startDate": "2026-02-01",
+      "bt:targetDate": "2026-05-20",
+      "bt:conversionType": "ONE_TIME",
+      "bt:sourceFormat": "Legacy System CSV",
+      "bt:targetFormat": "Oracle EBS Tables",
+      "bt:recordCount": 15000,
+      "bt:hasFile": [
+        "bt:file-010",
+        "bt:file-011",
+        "bt:file-012",
+        "bt:file-013",
+        "bt:file-014"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-001",
+        "bt:resource-005"
+      ]
+    },
+    {
+      "@id": "bt:object-004",
+      "@type": "bt:Enhancement",
+      "bt:riceId": "E-004",
+      "bt:objectName": "Custom Account Generator for PO",
+      "bt:objectType": "bt:Enhancement",
+      "bt:progress": 30,
+      "bt:status": "bt:Blocked",
+      "bt:description": "Custom workflow account generator to derive GL accounts based on item category, location, and cost center for PO distributions",
+      "bt:startDate": "2026-04-20",
+      "bt:targetDate": "2026-07-01",
+      "bt:enhancementType": "NEW_FEATURE",
+      "bt:impactLevel": "HIGH",
+      "bt:affectedModules": "PO, GL, Workflow",
+      "bt:hasFile": [
+        "bt:file-015",
+        "bt:file-016",
+        "bt:file-017",
+        "bt:file-018"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-002"
+      ]
+    },
+    {
+      "@id": "bt:object-005",
+      "@type": "bt:Enhancement",
+      "bt:riceId": "E-005",
+      "bt:objectName": "Custom AP Invoice Validation Rules",
+      "bt:objectType": "bt:Enhancement",
+      "bt:progress": 100,
+      "bt:status": "bt:Completed",
+      "bt:description": "Custom validation rules for AP invoices including tolerance checks, duplicate invoice detection, and mandatory field validations",
+      "bt:startDate": "2026-01-10",
+      "bt:targetDate": "2026-04-30",
+      "bt:actualCompletionDate": "2026-04-28",
+      "bt:enhancementType": "MODIFICATION",
+      "bt:impactLevel": "MEDIUM",
+      "bt:affectedModules": "AP, PO",
+      "bt:hasFile": [
+        "bt:file-019",
+        "bt:file-020",
+        "bt:file-021",
+        "bt:file-022"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-003"
+      ]
+    },
+    {
+      "@id": "bt:file-001",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_RPT.rdf",
+      "bt:filePath": "$XXPO_TOP/reports/US/XXPO_IPROC_REQ_STATUS_RPT.rdf",
+      "bt:fileType": "bt:SourceCode",
+      "bt:fileExtension": ".rdf",
+      "bt:lastModified": "2026-05-20T10:30:00Z",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-002",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_PKG.pks",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_IPROC_REQ_STATUS_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pks",
+      "bt:lastModified": "2026-05-18T14:20:00Z",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-003",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_PKG.pkb",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_IPROC_REQ_STATUS_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pkb",
+      "bt:lastModified": "2026-05-18T14:25:00Z",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-004",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_RPT.xml",
+      "bt:filePath": "$XXPO_TOP/reports/US/XXPO_IPROC_REQ_STATUS_RPT.xml",
+      "bt:fileType": "bt:Configuration",
+      "bt:fileExtension": ".xml",
+      "bt:lastModified": "2026-05-15T09:00:00Z",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-005",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_PKG.pks",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_VENDOR_INT_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pks",
+      "bt:lastModified": "2026-05-22T16:45:00Z",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-006",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_PKG.pkb",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_VENDOR_INT_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pkb",
+      "bt:lastModified": "2026-05-22T16:50:00Z",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-007",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_STG.sql",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_VENDOR_INT_STG.sql",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".sql",
+      "bt:lastModified": "2026-05-15T11:30:00Z",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-008",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_CONC.prog",
+      "bt:filePath": "$XXPO_TOP/bin/XXPO_VENDOR_INT_CONC.prog",
+      "bt:fileType": "bt:SourceCode",
+      "bt:fileExtension": ".prog",
+      "bt:lastModified": "2026-05-20T13:15:00Z",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-009",
+      "@type": "bt:File",
+      "bt:fileName": "vendor_interface_mapping.xml",
+      "bt:filePath": "$XXPO_TOP/config/vendor_interface_mapping.xml",
+      "bt:fileType": "bt:Configuration",
+      "bt:fileExtension": ".xml",
+      "bt:lastModified": "2026-05-21T08:00:00Z",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-010",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_STG.sql",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_SUPPLIER_CONV_STG.sql",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".sql",
+      "bt:lastModified": "2026-05-10T15:30:00Z",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-011",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_PKG.pks",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_SUPPLIER_CONV_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pks",
+      "bt:lastModified": "2026-05-10T10:00:00Z",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-012",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_PKG.pkb",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_SUPPLIER_CONV_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pkb",
+      "bt:lastModified": "2026-05-10T10:15:00Z",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-013",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_VAL.sql",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_SUPPLIER_CONV_VAL.sql",
+      "bt:fileType": "bt:TestScript",
+      "bt:fileExtension": ".sql",
+      "bt:lastModified": "2026-05-12T12:45:00Z",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-014",
+      "@type": "bt:File",
+      "bt:fileName": "supplier_migration_test_cases.xlsx",
+      "bt:filePath": "$XXPO_TOP/test/supplier_migration_test_cases.xlsx",
+      "bt:fileType": "bt:TestScript",
+      "bt:fileExtension": ".xlsx",
+      "bt:lastModified": "2026-05-14T12:45:00Z",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-015",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_CUSTOM_ACCT_GEN_PKG.pks",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_CUSTOM_ACCT_GEN_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pks",
+      "bt:lastModified": "2026-05-05T14:20:00Z",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-016",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_CUSTOM_ACCT_GEN_PKG.pkb",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_CUSTOM_ACCT_GEN_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pkb",
+      "bt:lastModified": "2026-05-05T14:30:00Z",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-017",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_ACCT_GEN_RULES.sql",
+      "bt:filePath": "$XXPO_TOP/sql/XXPO_ACCT_GEN_RULES.sql",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".sql",
+      "bt:lastModified": "2026-05-06T09:30:00Z",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-018",
+      "@type": "bt:File",
+      "bt:fileName": "po_account_generator_setup.doc",
+      "bt:filePath": "$XXPO_TOP/doc/po_account_generator_setup.doc",
+      "bt:fileType": "bt:Documentation",
+      "bt:fileExtension": ".doc",
+      "bt:lastModified": "2026-05-03T11:00:00Z",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-019",
+      "@type": "bt:File",
+      "bt:fileName": "XXAP_INVOICE_VALIDATION_PKG.pks",
+      "bt:filePath": "$XXAP_TOP/sql/XXAP_INVOICE_VALIDATION_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pks",
+      "bt:lastModified": "2026-04-25T16:00:00Z",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:file-020",
+      "@type": "bt:File",
+      "bt:fileName": "XXAP_INVOICE_VALIDATION_PKG.pkb",
+      "bt:filePath": "$XXAP_TOP/sql/XXAP_INVOICE_VALIDATION_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".pkb",
+      "bt:lastModified": "2026-04-25T16:15:00Z",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:file-021",
+      "@type": "bt:File",
+      "bt:fileName": "XXAP_CUSTOM_VALIDATIONS.sql",
+      "bt:filePath": "$XXAP_TOP/sql/XXAP_CUSTOM_VALIDATIONS.sql",
+      "bt:fileType": "bt:Database",
+      "bt:fileExtension": ".sql",
+      "bt:lastModified": "2026-04-20T11:15:00Z",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:file-022",
+      "@type": "bt:File",
+      "bt:fileName": "ap_validation_rules_config.xlsx",
+      "bt:filePath": "$XXAP_TOP/config/ap_validation_rules_config.xlsx",
+      "bt:fileType": "bt:Configuration",
+      "bt:fileExtension": ".xlsx",
+      "bt:lastModified": "2026-04-22T13:30:00Z",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:resource-001",
+      "@type": "bt:Resource",
+      "bt:resourceId": "EMP001",
+      "bt:resourceName": "Rajesh Kumar",
+      "bt:email": "rajesh.kumar@company.com",
+      "bt:role": "bt:Developer",
+      "bt:availability": 80,
+      "bt:skillSet": "Oracle PL/SQL, Reports, iProcurement",
+      "bt:department": "EBS Development",
+      "bt:workingOn": [
+        "bt:object-001",
+        "bt:object-003"
+      ]
+    },
+    {
+      "@id": "bt:resource-002",
+      "@type": "bt:Resource",
+      "bt:resourceId": "EMP002",
+      "bt:resourceName": "Priya Sharma",
+      "bt:email": "priya.sharma@company.com",
+      "bt:role": "bt:TechnicalLead",
+      "bt:availability": 60,
+      "bt:skillSet": "Oracle EBS, Workflow, Account Generator, PL/SQL",
+      "bt:department": "EBS Development",
+      "bt:workingOn": [
+        "bt:object-001",
+        "bt:object-004"
+      ]
+    },
+    {
+      "@id": "bt:resource-003",
+      "@type": "bt:Resource",
+      "bt:resourceId": "EMP003",
+      "bt:resourceName": "Amit Patel",
+      "bt:email": "amit.patel@company.com",
+      "bt:role": "bt:Developer",
+      "bt:availability": 100,
+      "bt:skillSet": "Oracle Integration, REST APIs, PL/SQL, AP Module",
+      "bt:department": "EBS Development",
+      "bt:workingOn": [
+        "bt:object-002",
+        "bt:object-005"
+      ]
+    },
+    {
+      "@id": "bt:resource-004",
+      "@type": "bt:Resource",
+      "bt:resourceId": "EMP004",
+      "bt:resourceName": "Sneha Reddy",
+      "bt:email": "sneha.reddy@company.com",
+      "bt:role": "bt:Analyst",
+      "bt:availability": 75,
+      "bt:skillSet": "Business Analysis, PO Module, Requirements Gathering",
+      "bt:department": "Business Analysis",
+      "bt:workingOn": [
+        "bt:object-002"
+      ]
+    },
+    {
+      "@id": "bt:resource-005",
+      "@type": "bt:Resource",
+      "bt:resourceId": "EMP005",
+      "bt:resourceName": "Vikram Singh",
+      "bt:email": "vikram.singh@company.com",
+      "bt:role": "bt:Tester",
+      "bt:availability": 90,
+      "bt:skillSet": "Oracle EBS Testing, Data Migration, SQL",
+      "bt:department": "Quality Assurance",
+      "bt:workingOn": [
+        "bt:object-003"
+      ]
+    }
+  ]
+}

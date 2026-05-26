@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle EBS Build Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="icon">📊</span>
+                    Oracle EBS Build Tracker
+                </h1>
+                <div class="header-actions">
+                    <button id="refreshBtn" class="btn btn-primary">
+                        <span class="icon">🔄</span>
+                        Refresh Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Statistics Bar -->
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalObjects">-</div>
+                    <div class="stat-label">Total Objects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgProgress">-</div>
+                    <div class="stat-label">Avg Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completedCount">-</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="inProgressCount">-</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-bar">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Search by RICE ID, object name, file name, or resource..."
+                >
+                <button id="searchBtn" class="btn btn-secondary">
+                    <span class="icon">🔍</span>
+                    Search
+                </button>
+                <button id="clearSearchBtn" class="btn btn-secondary">
+                    <span class="icon">✖</span>
+                    Clear
+                </button>
+            </div>
+            <div class="filter-bar">
+                <label class="filter-label">Filter by Status:</label>
+                <select id="statusFilter" class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="NOT_STARTED">Not Started</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="ON_HOLD">On Hold</option>
+                    <option value="BLOCKED">Blocked</option>
+                    <option value="IN_REVIEW">In Review</option>
+                    <option value="TESTING">Testing</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="DEPLOYED">Deployed</option>
+                </select>
+                <label class="filter-label">Filter by Type:</label>
+                <select id="typeFilter" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="REPORT">Report</option>
+                    <option value="INTERFACE">Interface</option>
+                    <option value="CONVERSION">Conversion</option>
+                    <option value="ENHANCEMENT">Enhancement</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading data...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <span class="icon">⚠️</span>
+                <span id="errorText"></span>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                <span class="icon">✓</span>
+                <span id="successText"></span>
+            </div>
+
+            <!-- RICE Objects Grid -->
+            <div id="objectsGrid" class="objects-grid">
+                <!-- Tiles will be dynamically inserted here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <span class="icon">📭</span>
+                <h2>No Objects Found</h2>
+                <p>No RICE objects match your search criteria.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Object Details -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Object Details</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <h3>Basic Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>RICE ID:</label>
+                            <span id="detailRiceId"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Object Name:</label>
+                            <span id="detailObjectName"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Type:</label>
+                            <span id="detailObjectType"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Status:</label>
+                            <span id="detailStatus" class="status-badge"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Progress:</label>
+                            <span id="detailProgress"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Start Date:</label>
+                            <span id="detailStartDate"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Target Date:</label>
+                            <span id="detailTargetDate"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Description</h3>
+                    <p id="detailDescription" class="description-text"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Files Used</h3>
+                    <ul id="detailFiles" class="detail-list"></ul>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Resources Assigned</h3>
+                    <ul id="detailResources" class="detail-list"></ul>
+
+    <!-- AI Chat Interface -->
+    <div id="aiChatWidget" class="ai-chat-widget">
+        <button id="aiChatToggle" class="ai-chat-toggle" title="Ask AI">
+            <span class="icon">🤖</span>
+        </button>
+        
+        <div id="aiChatPanel" class="ai-chat-panel" style="display: none;">
+            <div class="ai-chat-header">
+                <h3>
+                    <span class="icon">🤖</span>
+                    Ask AI About Your Build Tracker
+                </h3>
+                <button id="aiChatClose" class="ai-chat-close">&times;</button>
+            </div>
+            
+            <div class="ai-chat-status" id="aiChatStatus">
+                <span class="status-indicator" id="aiStatusIndicator">●</span>
+                <span id="aiStatusText">Checking connection...</span>
+            </div>
+            
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-message ai-welcome">
+                    <strong>👋 Hi! I'm your AI assistant.</strong>
+                    <p>Ask me questions about your RICE objects, like:</p>
+                    <ul>
+                        <li>"Which objects are blocked?"</li>
+                        <li>"Show me all files used in R-001"</li>
+                        <li>"Who is working on iProcurement objects?"</li>
+                        <li>"What's the progress of Interface objects?"</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ai-chat-input-container">
+                <textarea 
+                    id="aiChatInput" 
+                    class="ai-chat-input" 
+                    placeholder="Ask a question about your build tracker..."
+                    rows="2"
+                ></textarea>
+                <button id="aiChatSend" class="ai-chat-send" title="Send">
+                    <span class="icon">➤</span>
+                </button>
+            </div>
+            
+            <div class="ai-chat-actions">
+                <button id="aiUploadSchema" class="btn-ai-action" title="Upload schema to Context Studio">
+                    <span class="icon">📤</span> Upload Schema
+                </button>
+                <button id="aiUploadData" class="btn-ai-action" title="Upload current data to Context Studio">
+                    <span class="icon">📊</span> Upload Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Last Updated: <span id="lastUpdated">-</span></p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+{
+  "@context": {
+    "sro": "http://example.org/sro#",
+    "bt": "http://buildtracker.example.com/schema#",
+    "schema": "http://schema.org/",
+    "id": "@id",
+    "type": "@type",
+    "name": "schema:name",
+    "description": "schema:description",
+    "attributes": "sro:attributes",
+    "identityKey": "sro:identityKey",
+    "humanRef": "sro:humanRef",
+    "invariant": "sro:invariant",
+    "hasState": {
+      "@id": "sro:hasState",
+      "@type": "@id"
+    },
+    "initialState": {
+      "@id": "sro:initialState",
+      "@type": "@id"
+    },
+    "terminalStates": {
+      "@id": "sro:terminalStates",
+      "@type": "@id"
+    },
+    "relatesTo": {
+      "@id": "sro:relatesTo",
+      "@type": "@id"
+    },
+    "emitsEvent": {
+      "@id": "sro:emitsEvent",
+      "@type": "@id"
+    },
+    "from": {
+      "@id": "sro:from",
+      "@type": "@id"
+    },
+    "to": {
+      "@id": "sro:to",
+      "@type": "@id"
+    },
+    "precondition": "sro:precondition",
+    "postcondition": "sro:postcondition",
+    "Entity": "sro:Entity",
+    "Operation": "sro:Operation",
+    "State": "sro:State"
+  },
+  "@graph": [
+    {
+      "id": "bt:RICEObject",
+      "type": "Entity",
+      "name": "RICEObject",
+      "description": "A project tracking object representing Reports, Interfaces, Conversions, or Enhancements",
+      "identityKey": "riceId: string",
+      "humanRef": "objectName",
+      "attributes": {
+        "riceId": "string",
+        "objectName": "string",
+        "objectType": "REPORT|INTERFACE|CONVERSION|ENHANCEMENT",
+        "progress": "number",
+        "status": "NOT_STARTED|IN_PROGRESS|ON_HOLD|BLOCKED|IN_REVIEW|TESTING|COMPLETED|DEPLOYED",
+        "description": "string|null",
+        "startDate": "date|null",
+        "targetDate": "date|null",
+        "actualCompletionDate": "date|null"
+      },
+      "invariant": [
+        "riceId must be unique",
+        "progress must be between 0 and 100",
+        "objectType must be one of RICE values",
+        "A RICE object must have at least one file associated",
+        "A RICE object must have at least one resource assigned"
+      ],
+      "hasState": [
+        "bt:NotStarted",
+        "bt:InProgress",
+        "bt:OnHold",
+        "bt:Blocked",
+        "bt:InReview",
+        "bt:Testing",
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "initialState": "bt:NotStarted",
+      "terminalStates": [
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "relatesTo": [
+        "bt:File",
+        "bt:Resource",
+        "bt:Project"
+      ],
+      "emitsEvent": [
+        "bt:ObjectStarted",
+        "bt:ObjectProgressUpdated",
+        "bt:ObjectBlocked",
+        "bt:ObjectCompleted",
+        "bt:ObjectDeployed"
+      ]
+    },
+    {
+      "id": "bt:Report",
+      "type": "Entity",
+      "name": "Report",
+      "description": "A reporting object that generates data outputs or visualizations",
+      "identityKey": "riceId: string",
+      "humanRef": "objectName",
+      "attributes": {
+        "riceId": "string",
+        "objectName": "string",
+        "objectType": "REPORT",
+        "progress": "number",
+        "status": "NOT_STARTED|IN_PROGRESS|ON_HOLD|BLOCKED|IN_REVIEW|TESTING|COMPLETED|DEPLOYED",
+        "reportType": "OPERATIONAL|ANALYTICAL|DASHBOARD|ADHOC",
+        "outputFormat": "PDF|EXCEL|HTML|CSV",
+        "schedule": "string|null"
+      },
+      "invariant": [
+        "Must specify reportType and outputFormat",
+        "Report must have query or data source files"
+      ],
+      "hasState": [
+        "bt:NotStarted",
+        "bt:InProgress",
+        "bt:OnHold",
+        "bt:Blocked",
+        "bt:InReview",
+        "bt:Testing",
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "initialState": "bt:NotStarted",
+      "terminalStates": [
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "relatesTo": [
+        "bt:File",
+        "bt:Resource"
+      ]
+    },
+    {
+      "id": "bt:Interface",
+      "type": "Entity",
+      "name": "Interface",
+      "description": "An integration interface for data exchange between systems",
+      "identityKey": "riceId: string",
+      "humanRef": "objectName",
+      "attributes": {
+        "riceId": "string",
+        "objectName": "string",
+        "objectType": "INTERFACE",
+        "progress": "number",
+        "status": "NOT_STARTED|IN_PROGRESS|ON_HOLD|BLOCKED|IN_REVIEW|TESTING|COMPLETED|DEPLOYED",
+        "interfaceType": "INBOUND|OUTBOUND|BIDIRECTIONAL",
+        "protocol": "REST|SOAP|FILE|DATABASE|MESSAGE_QUEUE",
+        "sourceSystem": "string",
+        "targetSystem": "string"
+      },
+      "invariant": [
+        "Must specify interfaceType and protocol",
+        "Must define sourceSystem and targetSystem",
+        "Interface must have mapping configuration files"
+      ],
+      "hasState": [
+        "bt:NotStarted",
+        "bt:InProgress",
+        "bt:OnHold",
+        "bt:Blocked",
+        "bt:InReview",
+        "bt:Testing",
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "initialState": "bt:NotStarted",
+      "terminalStates": [
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "relatesTo": [
+        "bt:File",
+        "bt:Resource"
+      ]
+    },
+    {
+      "id": "bt:Conversion",
+      "type": "Entity",
+      "name": "Conversion",
+      "description": "A data conversion or migration object",
+      "identityKey": "riceId: string",
+      "humanRef": "objectName",
+      "attributes": {
+        "riceId": "string",
+        "objectName": "string",
+        "objectType": "CONVERSION",
+        "progress": "number",
+        "status": "NOT_STARTED|IN_PROGRESS|ON_HOLD|BLOCKED|IN_REVIEW|TESTING|COMPLETED|DEPLOYED",
+        "conversionType": "ONE_TIME|RECURRING",
+        "sourceFormat": "string",
+        "targetFormat": "string",
+        "recordCount": "number|null"
+      },
+      "invariant": [
+        "Must specify conversionType",
+        "Must define sourceFormat and targetFormat",
+        "Conversion must have validation scripts"
+      ],
+      "hasState": [
+        "bt:NotStarted",
+        "bt:InProgress",
+        "bt:OnHold",
+        "bt:Blocked",
+        "bt:InReview",
+        "bt:Testing",
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "initialState": "bt:NotStarted",
+      "terminalStates": [
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "relatesTo": [
+        "bt:File",
+        "bt:Resource"
+      ]
+    },
+    {
+      "id": "bt:Enhancement",
+      "type": "Entity",
+      "name": "Enhancement",
+      "description": "A system enhancement or customization",
+      "identityKey": "riceId: string",
+      "humanRef": "objectName",
+      "attributes": {
+        "riceId": "string",
+        "objectName": "string",
+        "objectType": "ENHANCEMENT",
+        "progress": "number",
+        "status": "NOT_STARTED|IN_PROGRESS|ON_HOLD|BLOCKED|IN_REVIEW|TESTING|COMPLETED|DEPLOYED",
+        "enhancementType": "NEW_FEATURE|MODIFICATION|OPTIMIZATION",
+        "impactLevel": "LOW|MEDIUM|HIGH|CRITICAL",
+        "affectedModules": "string"
+      },
+      "invariant": [
+        "Must specify enhancementType and impactLevel",
+        "Must document affected modules"
+      ],
+      "hasState": [
+        "bt:NotStarted",
+        "bt:InProgress",
+        "bt:OnHold",
+        "bt:Blocked",
+        "bt:InReview",
+        "bt:Testing",
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "initialState": "bt:NotStarted",
+      "terminalStates": [
+        "bt:Completed",
+        "bt:Deployed"
+      ],
+      "relatesTo": [
+        "bt:File",
+        "bt:Resource"
+      ]
+    },
+    {
+      "id": "bt:File",
+      "type": "Entity",
+      "name": "File",
+      "description": "A file used in a RICE object (source code, configuration, documentation, etc.)",
+      "identityKey": "filePath: string",
+      "humanRef": "fileName",
+      "attributes": {
+        "fileName": "string",
+        "filePath": "string",
+        "fileType": "SOURCE_CODE|CONFIGURATION|DOCUMENTATION|DATABASE|TEST_SCRIPT",
+        "fileExtension": "string",
+        "lastModified": "datetime|null",
+        "fileSize": "number|null",
+        "version": "string|null"
+      },
+      "invariant": [
+        "filePath must be unique",
+        "fileName must not be empty",
+        "fileType must be one of defined values"
+      ],
+      "relatesTo": [
+        "bt:RICEObject"
+      ]
+    },
+    {
+      "id": "bt:Resource",
+      "type": "Entity",
+      "name": "Resource",
+      "description": "A person working on RICE objects",
+      "identityKey": "resourceId: string",
+      "humanRef": "resourceName",
+      "attributes": {
+        "resourceId": "string",
+        "resourceName": "string",
+        "email": "string",
+        "role": "DEVELOPER|TECHNICAL_LEAD|ANALYST|TESTER|PROJECT_MANAGER|ARCHITECT",
+        "availability": "number",
+        "skillSet": "string|null",
+        "department": "string|null"
+      },
+      "invariant": [
+        "resourceId must be unique",
+        "email must be valid format",
+        "availability must be between 0 and 100",
+        "role must be one of defined values"
+      ],
+      "relatesTo": [
+        "bt:RICEObject"
+      ]
+    },
+    {
+      "id": "bt:Project",
+      "type": "Entity",
+      "name": "Project",
+      "description": "A project that contains multiple RICE objects",
+      "identityKey": "projectId: string",
+      "humanRef": "projectName",
+      "attributes": {
+        "projectId": "string",
+        "projectName": "string",
+        "description": "string|null",
+        "startDate": "date",
+        "endDate": "date",
+        "status": "PLANNING|ACTIVE|ON_HOLD|COMPLETED|CANCELLED",
+        "budget": "number|null"
+      },
+      "invariant": [
+        "projectId must be unique",
+        "endDate must be after startDate",
+        "A project must have at least one RICE object"
+      ],
+      "hasState": [
+        "bt:ProjectPlanning",
+        "bt:ProjectActive",
+        "bt:ProjectOnHold",
+        "bt:ProjectCompleted",
+        "bt:ProjectCancelled"
+      ],
+      "initialState": "bt:ProjectPlanning",
+      "terminalStates": [
+        "bt:ProjectCompleted",
+        "bt:ProjectCancelled"
+      ],
+      "relatesTo": [
+        "bt:RICEObject"
+      ]
+    },
+    {
+      "id": "bt:UsesFile",
+      "type": "Operation",
+      "name": "UsesFile",
+      "description": "Links a RICE object to files it uses",
+      "from": "bt:RICEObject",
+      "to": "bt:File",
+      "precondition": [
+        "RICE object must exist",
+        "File must exist"
+      ],
+      "postcondition": [
+        "RICE object is associated with the file",
+        "File is tracked as part of the object"
+      ]
+    },
+    {
+      "id": "bt:AssignedTo",
+      "type": "Operation",
+      "name": "AssignedTo",
+      "description": "Assigns a resource to work on a RICE object",
+      "from": "bt:RICEObject",
+      "to": "bt:Resource",
+      "precondition": [
+        "RICE object must exist",
+        "Resource must exist",
+        "Resource must have availability > 0"
+      ],
+      "postcondition": [
+        "Resource is assigned to the RICE object",
+        "Resource's workload is updated"
+      ]
+    },
+    {
+      "id": "bt:DependsOn",
+      "type": "Operation",
+      "name": "DependsOn",
+      "description": "Defines dependency between RICE objects",
+      "from": "bt:RICEObject",
+      "to": "bt:RICEObject",
+      "precondition": [
+        "Both RICE objects must exist",
+        "No circular dependencies allowed"
+      ],
+      "postcondition": [
+        "Dependent object cannot be completed before prerequisite",
+        "Dependency relationship is recorded"
+      ]
+    },
+    {
+      "id": "bt:BelongsToProject",
+      "type": "Operation",
+      "name": "BelongsToProject",
+      "description": "Associates a RICE object with a project",
+      "from": "bt:RICEObject",
+      "to": "bt:Project",
+      "precondition": [
+        "RICE object must exist",
+        "Project must exist",
+        "Project must be in PLANNING or ACTIVE state"
+      ],
+      "postcondition": [
+        "RICE object is part of the project",
+        "Project tracks the object's progress"
+      ]
+    },
+    {
+      "id": "bt:UpdateProgress",
+      "type": "Operation",
+      "name": "UpdateProgress",
+      "description": "Updates the progress percentage of a RICE object",
+      "from": "bt:RICEObject",
+      "to": "bt:RICEObject",
+      "precondition": [
+        "RICE object must be in IN_PROGRESS state",
+        "New progress value must be between 0 and 100",
+        "New progress must be >= current progress"
+      ],
+      "postcondition": [
+        "Progress is updated",
+        "ObjectProgressUpdated event is emitted",
+        "If progress reaches 100, status changes to COMPLETED"
+      ]
+    },
+    {
+      "id": "bt:NotStarted",
+      "type": "State",
+      "name": "NotStarted",
+      "description": "RICE object has not yet been started"
+    },
+    {
+      "id": "bt:InProgress",
+      "type": "State",
+      "name": "InProgress",
+      "description": "Work on the RICE object is currently in progress"
+    },
+    {
+      "id": "bt:OnHold",
+      "type": "State",
+      "name": "OnHold",
+      "description": "Work on the RICE object is temporarily paused"
+    },
+    {
+      "id": "bt:Blocked",
+      "type": "State",
+      "name": "Blocked",
+      "description": "RICE object is blocked by dependencies or issues"
+    },
+    {
+      "id": "bt:InReview",
+      "type": "State",
+      "name": "InReview",
+      "description": "RICE object is under review"
+    },
+    {
+      "id": "bt:Testing",
+      "type": "State",
+      "name": "Testing",
+      "description": "RICE object is being tested"
+    },
+    {
+      "id": "bt:Completed",
+      "type": "State",
+      "name": "Completed",
+      "description": "Work on the RICE object is completed"
+    },
+    {
+      "id": "bt:Deployed",
+      "type": "State",
+      "name": "Deployed",
+      "description": "RICE object has been deployed to production"
+    },
+    {
+      "id": "bt:ProjectPlanning",
+      "type": "State",
+      "name": "ProjectPlanning",
+      "description": "Project is in planning phase"
+    },
+    {
+      "id": "bt:ProjectActive",
+      "type": "State",
+      "name": "ProjectActive",
+      "description": "Project is actively being worked on"
+    },
+    {
+      "id": "bt:ProjectOnHold",
+      "type": "State",
+      "name": "ProjectOnHold",
+      "description": "Project is temporarily on hold"
+    },
+    {
+      "id": "bt:ProjectCompleted",
+      "type": "State",
+      "name": "ProjectCompleted",
+      "description": "Project has been completed"
+    },
+    {
+      "id": "bt:ProjectCancelled",
+      "type": "State",
+      "name": "ProjectCancelled",
+      "description": "Project has been cancelled"
+    }
+  ]
+}
