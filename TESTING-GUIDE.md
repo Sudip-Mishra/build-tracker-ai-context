@@ -125,23 +125,50 @@ You can check the progress in Context Studio:
 
 #### Test 4: Query the Data
 
-**Use this PowerShell command:**
+**Use this PowerShell command to see the full answer:**
 ```powershell
 $body = @{
     question = "Show me all RICE objects"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/query" -Method Post -Body $body -ContentType "application/json"
+$response = Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/query" -Method Post -Body $body -ContentType "application/json"
+
+# Display the full answer (not truncated)
+Write-Host "`nSuccess: $($response.success)" -ForegroundColor Green
+Write-Host "`nQuestion: $($response.question)" -ForegroundColor Cyan
+Write-Host "`nAnswer:" -ForegroundColor Yellow
+Write-Host $response.answer
+Write-Host "`nContext ID: $($response.contextId)" -ForegroundColor Gray
 ```
 
-**Expected Response:**
-```json
-{
-  "success": true,
-  "question": "Show me all RICE objects",
-  "answer": "**REPORT-001 - Customer Report** (relevance: 95%)\nRICE Object: REPORT-001\nName: Customer Report\nType: bt:Report\nStatus: bt:In Progress\nProgress: 75%\n...",
-  "contextId": "ctx_0285e494930b"
-}
+**Expected Output:**
+```
+Success: True
+
+Question: Show me all RICE objects
+
+Answer:
+**REPORT-001 - Customer Report** (relevance: 95%)
+RICE Object: REPORT-001
+Name: Customer Report
+Type: bt:Report
+Status: bt:In Progress
+Progress: 75%
+...
+
+Context ID: ctx_0285e494930b
+```
+
+**Alternative - Save to variable and access properties:**
+```powershell
+$body = @{ question = "Show me all RICE objects" } | ConvertTo-Json
+$result = Invoke-RestMethod -Uri "http://localhost:3000/api/context-studio/query" -Method Post -Body $body -ContentType "application/json"
+
+# Access individual properties
+$result.success    # True
+$result.question   # Show me all RICE objects
+$result.answer     # Full answer text
+$result.contextId  # ctx_0285e494930b
 ```
 
 ---
