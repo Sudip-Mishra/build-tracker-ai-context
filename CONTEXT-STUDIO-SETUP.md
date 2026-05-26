@@ -52,36 +52,59 @@ Store the token in a secure location (password manager recommended). You'll need
 2. Click **"Add New Connector"** button
 3. From the **Data Source** dropdown, select **"GitHub"**
 
-### 3.2 Configure GitHub Connector
+### 3.2 Select Repository Type
+
+You'll see two radio button options:
+- **Public** - For public GitHub repositories
+- **Private** - For private GitHub repositories (select this)
+
+**Select "Private"** since your repository is private.
+
+### 3.3 Configure Private GitHub Connector
 
 Fill in the following fields:
 
 | Field | Value | Notes |
 |-------|-------|-------|
-| **Access Token** | Paste your GitHub token from Step 1 | Format: `ghp_xxxx...` |
-| **Repository URL** | `https://github.com/Sudip-Mishra/build-tracker-ai-context` | Full repository URL |
-| **Re-ingestion Required** | ☑️ Checked | Enable to allow re-ingestion of files |
+| **Base URL** | `https://api.github.com` | GitHub API endpoint |
+| **Org** | `Sudip-Mishra` | Your GitHub username/organization |
+| **Access Token** | Paste your token from Step 1 | Format: `ghp_xxxx...` |
 
-**Important Notes:**
-- The Repository URL should be the full GitHub URL (not just owner/repo)
-- Make sure the Access Token has `repo` scope
-- Re-ingestion checkbox allows Context Studio to re-process files when they change
+### 3.4 Load Repositories
 
-### 3.3 Save Configuration
+1. Click the **"Enter Github Credentials to load Repositories"** button
+2. Wait 5-10 seconds for Context Studio to fetch your repositories
+3. The system will authenticate and retrieve your repository list
 
-1. Review all settings carefully
+### 3.5 Select Repository
+
+1. From the **"Select Github Repositories"** dropdown, find and select:
+   ```
+   build-tracker-ai-context
+   ```
+2. Check the **"Re-ingestion Required"** checkbox: ☑️
+   - This allows Context Studio to re-process files when they change
+
+### 3.6 Save Configuration
+
+1. Review all settings carefully:
+   - Base URL: `https://api.github.com`
+   - Org: `Sudip-Mishra`
+   - Repository: `build-tracker-ai-context`
+   - Re-ingestion: Checked
 2. Click **"Save"** or **"Create Connector"**
 3. Wait for confirmation message
 4. The connector should now appear in your sources list
 
-### 3.4 Verify Connector Status
+### 3.7 Verify Connector Status
 
 After saving:
 1. Check the connector status - should show **"Active"** or **"Connected"**
 2. If there's an error, verify:
    - GitHub token is valid and not expired
-   - Repository URL is correct
    - Token has `repo` scope permissions
+   - Organization name is correct
+   - Repository name is correct
 
 ## Step 4: Verify GitHub Connector
 

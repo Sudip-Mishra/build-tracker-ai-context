@@ -13,21 +13,29 @@
 4. Click **"Generate token"**
 5. **Copy the token** (format: `ghp_xxxxxxxxxxxx...`)
 
-### Step 2: Configure Context Studio (1 minute)
+### Step 2: Configure Context Studio (2 minutes)
 
 1. Login to Context Studio
 2. Navigate to your context: **Build Tracker Context** (`ctx_0285e494930b`)
 3. Go to **"Sources"** or **"Connectors"**
 4. Click **"Add New Connector"**
 5. Select **"GitHub"** from dropdown
-6. Fill in:
+6. Select **"Private"** radio button (not Public)
+7. Fill in the following fields:
    ```
+   Base URL: https://api.github.com
+   Org: Sudip-Mishra
    Access Token: [paste your token from Step 1]
-   Repository URL: https://github.com/Sudip-Mishra/build-tracker-ai-context
-   Re-ingestion Required: ☑️ Checked
    ```
-7. Click **"Save"**
-8. Verify status shows **"Active"** or **"Connected"**
+8. Click **"Enter Github Credentials to load Repositories"** button
+9. Wait for repositories to load (may take 5-10 seconds)
+10. From **"Select Github Repositories"** dropdown, select:
+    ```
+    build-tracker-ai-context
+    ```
+11. Check **"Re-ingestion Required"**: ☑️ Checked
+12. Click **"Save"**
+13. Verify status shows **"Active"** or **"Connected"**
 
 ### Step 3: Test It! (5 minutes)
 
