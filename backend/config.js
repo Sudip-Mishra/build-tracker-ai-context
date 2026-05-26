@@ -32,6 +32,21 @@ module.exports = {
     }
   },
 
+  // Context Studio configuration
+  contextStudio: {
+    enabled: true,
+    sourceId: process.env.CONTEXT_STUDIO_SOURCE_ID || 'src_build_tracker_git',
+    sourceType: 'git',
+    repositoryUrl: 'https://github.com/Sudip-Mishra/build-tracker-ai-context',
+    exportPath: '../context-exports',
+    agentPersona: 'BuildTrackerAgent',
+    branch: 'main',
+    // Ingestion settings
+    autoCommit: true,
+    autoPush: true,
+    commitMessage: 'Update Context Studio data'
+  },
+
   // CORS configuration
   cors: {
     origin: process.env.CORS_ORIGIN || '*',

@@ -1,0 +1,9 @@
+# Ignore temporary files
+*.tmp
+*.log
+
+# Keep the directory structure
+!.gitkeep
+!README.md
+
+# Made with Bob

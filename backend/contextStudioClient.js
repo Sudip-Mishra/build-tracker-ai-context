@@ -6,6 +6,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 class ContextStudioClient {
   constructor() {
@@ -33,6 +34,9 @@ class ContextStudioClient {
     };
     this.enabled = true;
     this.contextId = null; // Will be fetched dynamically
+    
+    // Load app configuration
+    this.appConfig = require('./config');
 
     console.log('Context Studio MCP client initialized');
   }
@@ -180,7 +184,120 @@ class ContextStudioClient {
   }
 
   /**
-   * Upload schema to Context Studio
+   * Write file to Git-tracked export directory
+   * @param {string} relativePath - Path relative to context-exports/
+   * @param {string} content - File content
+   * @returns {Promise<string>} - Full path to written file
+   */
+  async writeToExport(relativePath, content) {
+    const exportPath = path.resolve(__dirname, this.appConfig.contextStudio.exportPath);
+    const fullPath = path.join(exportPath, relativePath);
+    
+    // Create directory if it doesn't exist
+    await fs.promises.mkdir(path.dirname(fullPath), { recursive: true });
+    
+    // Write file
+    await fs.promises.writeFile(fullPath, content, 'utf8');
+    
+    console.log(`File written to: ${fullPath}`);
+    return fullPath;
+  }
+
+  /**
+   * Commit and push files to Git repository
+   * @param {Array<string>} files - Array of file paths relative to project root
+   * @param {string} message - Commit message
+   * @returns {Promise<boolean>} - Success status
+   */
+  async commitAndPush(files, message) {
+    if (!this.appConfig.contextStudio.autoCommit) {
+      console.log('Auto-commit disabled, skipping Git operations');
+      return false;
+    }
+
+    const cwd = path.resolve(__dirname, '..');
+    
+    try {
+      console.log('Git: Adding files...');
+      // Add files
+      files.forEach(file => {
+        const normalizedPath = file.replace(/\\/g, '/');
+        execSync(`git add "${normalizedPath}"`, { cwd, stdio: 'pipe' });
+      });
+      
+      console.log('Git: Committing...');
+      // Commit
+      execSync(`git commit -m "${message}"`, { cwd, stdio: 'pipe' });
+      
+      if (this.appConfig.contextStudio.autoPush) {
+        console.log('Git: Pushing to remote...');
+        // Push
+        const branch = this.appConfig.contextStudio.branch || 'main';
+        execSync(`git push origin ${branch}`, { cwd, stdio: 'pipe' });
+        console.log('Git: Push successful');
+      }
+      
+      return true;
+    } catch (error) {
+      // Check if error is "nothing to commit"
+      if (error.message.includes('nothing to commit')) {
+        console.log('Git: No changes to commit');
+        return true;
+      }
+      console.error('Git operation failed:', error.message);
+      throw new Error(`Git operation failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Trigger Context Studio ingestion event
+   * @param {Array<string>} files - Array of file paths relative to context-exports/
+   * @param {string} action - Action type: 'add', 'update', or 'delete'
+   * @returns {Promise<Object>} - Ingestion result
+   */
+  async triggerIngestion(files, action = 'update') {
+    const contextId = await this.getContextId();
+    const config = this.appConfig.contextStudio;
+    
+    console.log(`Triggering Context Studio ingestion for ${files.length} file(s)...`);
+    
+    // Group files by directory
+    const filesByDir = {};
+    files.forEach(file => {
+      const normalizedPath = file.replace(/\\/g, '/');
+      const relativePath = normalizedPath.replace('context-exports/', '');
+      const dir = path.dirname(relativePath);
+      const filename = path.basename(relativePath);
+      
+      if (!filesByDir[dir]) {
+        filesByDir[dir] = [];
+      }
+      filesByDir[dir].push(filename);
+    });
+    
+    // Create sub_folder array
+    const subFolders = Object.keys(filesByDir).map(dir => ({
+      folder_name: dir === '.' ? '' : dir,
+      action: action,
+      file_names: filesByDir[dir]
+    }));
+    
+    return await this.callMCPTool('context-broker-post-events', {
+      context_id: contextId,
+      event_type: 'gitUpdate',
+      payload: {
+        source_id: config.sourceId,
+        source_type: config.sourceType,
+        paths: [{
+          parent_folder: 'context-exports',
+          sub_folder: subFolders
+        }]
+      }
+    });
+  }
+
+  /**
+   * Upload schema to Context Studio via Git ingestion
    */
   async uploadSchema() {
     if (!this.enabled) {
@@ -188,37 +305,41 @@ class ContextStudioClient {
     }
 
     try {
+      console.log('Uploading schema to Context Studio via Git ingestion...');
+      
+      // Step 1: Read schema file
       const schemaPath = path.resolve(__dirname, '../schema/build-tracker-schema.jsonld');
       const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
-
-      console.log('Uploading schema to Context Studio via MCP...');
-
-      // Get the actual context ID
-      const contextId = await this.getContextId();
-      console.log('Using context ID for schema upload:', contextId);
-
-      // Format schema as text content for upload
-      const schemaText = JSON.stringify(schema, null, 2);
       
-      const result = await this.callMCPTool('context-broker-post-events', {
-        events: [{
-          type: 'document',
-          content: schemaText,
-          metadata: {
-            title: 'Build Tracker Schema',
-            source: 'build-tracker-schema.jsonld',
-            type: 'schema',
-            context_id: contextId
-          },
-          timestamp: new Date().toISOString()
-        }]
-      });
-
-      console.log('Schema uploaded successfully');
+      // Step 2: Write to export directory
+      const relativePath = 'schema/build-tracker-schema.jsonld';
+      await this.writeToExport(
+        relativePath,
+        JSON.stringify(schema, null, 2)
+      );
+      
+      console.log('Schema written to context-exports/schema/');
+      
+      // Step 3: Commit and push to GitHub
+      const fullPath = `context-exports/${relativePath}`;
+      await this.commitAndPush(
+        [fullPath],
+        'Upload Build Tracker schema to Context Studio'
+      );
+      
+      console.log('Schema pushed to GitHub');
+      
+      // Step 4: Trigger Context Studio ingestion
+      const result = await this.triggerIngestion([fullPath], 'update');
+      
+      console.log('Schema ingestion triggered successfully');
+      
+      const contextId = await this.getContextId();
       return {
         success: true,
-        message: 'Schema uploaded to Context Studio',
+        message: 'Schema uploaded and ingestion triggered',
         contextId: contextId,
+        file: fullPath,
         data: result
       };
     } catch (error) {
@@ -228,7 +349,7 @@ class ContextStudioClient {
   }
 
   /**
-   * Upload data to Context Studio
+   * Upload data to Context Studio via Git ingestion
    * @param {Object} jsonLdData - JSON-LD formatted data
    */
   async uploadData(jsonLdData) {
@@ -237,67 +358,45 @@ class ContextStudioClient {
     }
 
     try {
-      console.log('Uploading data to Context Studio via MCP...');
-
-      // Get the actual context ID
-      const contextId = await this.getContextId();
-      console.log('Using context ID for data upload:', contextId);
-
-      const entities = jsonLdData['@graph'] || [];
+      console.log('Uploading data to Context Studio via Git ingestion...');
       
-      // Convert each entity to a document event
-      const events = entities.map((entity, index) => {
-        // Create human-readable content
-        const content = `
-RICE Object: ${entity['bt:riceId'] || entity['@id']}
-Name: ${entity['bt:objectName'] || 'N/A'}
-Type: ${entity['@type'] || 'N/A'}
-Status: ${entity['bt:status'] || 'N/A'}
-Progress: ${entity['bt:progress'] || 0}%
-Description: ${entity['bt:description'] || 'N/A'}
-Files: ${entity['bt:hasFile']?.length || 0}
-Resources: ${entity['bt:assignedTo']?.length || 0}
-Start Date: ${entity['bt:startDate'] || 'N/A'}
-Target Date: ${entity['bt:targetDate'] || 'N/A'}
-        `.trim();
-
-        return {
-          type: 'document',
-          content: content,
-          metadata: {
-            title: `${entity['bt:riceId']} - ${entity['bt:objectName']}`,
-            source: 'build-tracker',
-            type: entity['@type'] || 'RICEObject',
-            rice_id: entity['bt:riceId'],
-            object_type: entity['bt:objectType'],
-            status: entity['bt:status'],
-            progress: entity['bt:progress'],
-            context_id: contextId,
-            entity_id: entity['@id']
-          },
-          timestamp: new Date().toISOString()
-        };
-      });
-
-      // Upload in batches of 5 to avoid timeout
-      const batchSize = 5;
-      let uploadedCount = 0;
-
-      for (let i = 0; i < events.length; i += batchSize) {
-        const batch = events.slice(i, i + batchSize);
-        await this.callMCPTool('context-broker-post-events', {
-          events: batch
-        });
-        uploadedCount += batch.length;
-        console.log(`Uploaded ${uploadedCount}/${events.length} entities...`);
-      }
-
-      console.log(`Data uploaded successfully: ${events.length} entities`);
+      // Step 1: Create timestamped filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `rice-objects-${timestamp}.jsonld`;
+      const relativePath = `data/${filename}`;
+      
+      // Step 2: Write JSON-LD to export directory
+      await this.writeToExport(
+        relativePath,
+        JSON.stringify(jsonLdData, null, 2)
+      );
+      
+      const entities = jsonLdData['@graph'] || [];
+      console.log(`Data written to: context-exports/${relativePath} (${entities.length} entities)`);
+      
+      // Step 3: Commit and push to GitHub
+      const fullPath = `context-exports/${relativePath}`;
+      await this.commitAndPush(
+        [fullPath],
+        `Upload RICE objects data - ${timestamp}`
+      );
+      
+      console.log('Data pushed to GitHub');
+      
+      // Step 4: Trigger Context Studio ingestion
+      const result = await this.triggerIngestion([fullPath], 'add');
+      
+      console.log('Data ingestion triggered successfully');
+      
+      const contextId = await this.getContextId();
       return {
         success: true,
-        message: 'Data uploaded to Context Studio',
+        message: 'Data uploaded and ingestion triggered',
         contextId: contextId,
-        count: events.length
+        file: fullPath,
+        timestamp: timestamp,
+        count: entities.length,
+        data: result
       };
     } catch (error) {
       console.error('Error uploading data:', error.message);
@@ -319,26 +418,32 @@ Target Date: ${entity['bt:targetDate'] || 'N/A'}
 
       // Get the actual context ID
       const contextId = await this.getContextId();
-      console.log('Using context ID for query:', contextId);
+      const agentPersona = this.appConfig.contextStudio.agentPersona;
+      console.log(`Using context ID: ${contextId}, Agent Persona: ${agentPersona}`);
 
-      // Try vector query with context filter
+      // Try vector query with correct parameters
       let result;
       try {
         result = await this.callMCPTool('context-broker-vector-query', {
+          context_id: contextId,
+          AgentPersona: agentPersona,
           query: question,
-          top_k: 10,
-          filter: {
-            context_id: contextId
-          }
+          top_k: 5
         });
       } catch (vectorError) {
         console.log('Vector query failed, trying hybrid query...');
-        // Fallback to hybrid query
+        // Fallback to hybrid query with optimized parameters
         result = await this.callMCPTool('context-broker-hybrid-query', {
+          context_id: contextId,
+          AgentPersona: agentPersona,
           query: question,
-          top_k: 10,
-          filter: {
-            context_id: contextId
+          sources: ['vector', 'graph'],
+          graph_params: {
+            max_depth: 1,
+            limit: 5
+          },
+          vector_params: {
+            top_k: 5
           }
         });
       }
