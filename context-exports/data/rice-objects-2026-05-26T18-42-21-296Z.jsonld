@@ -1,0 +1,334 @@
+{
+  "@context": "../schema/build-tracker-schema.jsonld",
+  "@graph": [
+    {
+      "@id": "bt:file-R-001-1",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_RPT.rdf",
+      "bt:filePath": "XXPO_IPROC_REQ_STATUS_RPT.rdf",
+      "bt:fileType": "bt:SourceCode",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-R-001-2",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_PKG.pks",
+      "bt:filePath": "XXPO_IPROC_REQ_STATUS_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-R-001-3",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_PKG.pkb",
+      "bt:filePath": "XXPO_IPROC_REQ_STATUS_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:file-R-001-4",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_IPROC_REQ_STATUS_RPT.xml",
+      "bt:filePath": "XXPO_IPROC_REQ_STATUS_RPT.xml",
+      "bt:fileType": "bt:Configuration",
+      "bt:usedInObject": "bt:object-001"
+    },
+    {
+      "@id": "bt:resource-rajesh-kumar",
+      "@type": "bt:Resource",
+      "bt:resourceName": "Rajesh Kumar",
+      "bt:workingOn": [
+        "bt:object-001",
+        "bt:object-003"
+      ]
+    },
+    {
+      "@id": "bt:resource-priya-sharma",
+      "@type": "bt:Resource",
+      "bt:resourceName": "Priya Sharma",
+      "bt:workingOn": [
+        "bt:object-001",
+        "bt:object-004"
+      ]
+    },
+    {
+      "@id": "bt:object-001",
+      "@type": "bt:Report",
+      "bt:riceId": "R-001",
+      "bt:objectName": "iProcurement Requisition Status Report",
+      "bt:objectType": "bt:REPORT",
+      "bt:progress": 75,
+      "bt:status": "bt:IN_PROGRESS",
+      "bt:description": "Custom report showing iProcurement requisition status with approval hierarchy and buyer assignments",
+      "bt:startDate": "2026-04-01",
+      "bt:targetDate": "2026-05-30",
+      "bt:hasFile": [
+        "bt:file-R-001-1",
+        "bt:file-R-001-2",
+        "bt:file-R-001-3",
+        "bt:file-R-001-4"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-rajesh-kumar",
+        "bt:resource-priya-sharma"
+      ]
+    },
+    {
+      "@id": "bt:file-I-002-1",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_PKG.pks",
+      "bt:filePath": "XXPO_VENDOR_INT_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-I-002-2",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_PKG.pkb",
+      "bt:filePath": "XXPO_VENDOR_INT_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-I-002-3",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_STG.sql",
+      "bt:filePath": "XXPO_VENDOR_INT_STG.sql",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-I-002-4",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_VENDOR_INT_CONC.prog",
+      "bt:filePath": "XXPO_VENDOR_INT_CONC.prog",
+      "bt:fileType": "bt:SourceCode",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:file-I-002-5",
+      "@type": "bt:File",
+      "bt:fileName": "vendor_interface_mapping.xml",
+      "bt:filePath": "vendor_interface_mapping.xml",
+      "bt:fileType": "bt:Configuration",
+      "bt:usedInObject": "bt:object-002"
+    },
+    {
+      "@id": "bt:resource-amit-patel",
+      "@type": "bt:Resource",
+      "bt:resourceName": "Amit Patel",
+      "bt:workingOn": [
+        "bt:object-002",
+        "bt:object-005"
+      ]
+    },
+    {
+      "@id": "bt:resource-sneha-reddy",
+      "@type": "bt:Resource",
+      "bt:resourceName": "Sneha Reddy",
+      "bt:workingOn": [
+        "bt:object-002"
+      ]
+    },
+    {
+      "@id": "bt:object-002",
+      "@type": "bt:Interface",
+      "bt:riceId": "I-002",
+      "bt:objectName": "PO to External Vendor System Interface",
+      "bt:objectType": "bt:INTERFACE",
+      "bt:progress": 45,
+      "bt:status": "bt:IN_PROGRESS",
+      "bt:description": "Outbound interface to send PO data to external vendor portal via REST API",
+      "bt:startDate": "2026-03-15",
+      "bt:targetDate": "2026-06-15",
+      "bt:hasFile": [
+        "bt:file-I-002-1",
+        "bt:file-I-002-2",
+        "bt:file-I-002-3",
+        "bt:file-I-002-4",
+        "bt:file-I-002-5"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-amit-patel",
+        "bt:resource-sneha-reddy"
+      ]
+    },
+    {
+      "@id": "bt:file-C-003-1",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_STG.sql",
+      "bt:filePath": "XXPO_SUPPLIER_CONV_STG.sql",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-C-003-2",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_PKG.pks",
+      "bt:filePath": "XXPO_SUPPLIER_CONV_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-C-003-3",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_PKG.pkb",
+      "bt:filePath": "XXPO_SUPPLIER_CONV_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-C-003-4",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_SUPPLIER_CONV_VAL.sql",
+      "bt:filePath": "XXPO_SUPPLIER_CONV_VAL.sql",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:file-C-003-5",
+      "@type": "bt:File",
+      "bt:fileName": "supplier_migration_test_cases.xlsx",
+      "bt:filePath": "supplier_migration_test_cases.xlsx",
+      "bt:fileType": "bt:TestScript",
+      "bt:usedInObject": "bt:object-003"
+    },
+    {
+      "@id": "bt:resource-vikram-singh",
+      "@type": "bt:Resource",
+      "bt:resourceName": "Vikram Singh",
+      "bt:workingOn": [
+        "bt:object-003"
+      ]
+    },
+    {
+      "@id": "bt:object-003",
+      "@type": "bt:Conversion",
+      "bt:riceId": "C-003",
+      "bt:objectName": "Legacy Supplier Data Migration",
+      "bt:objectType": "bt:CONVERSION",
+      "bt:progress": 90,
+      "bt:status": "bt:TESTING",
+      "bt:description": "One-time conversion to migrate supplier master data from legacy system to AP_SUPPLIERS and PO_VENDORS",
+      "bt:startDate": "2026-02-01",
+      "bt:targetDate": "2026-05-20",
+      "bt:hasFile": [
+        "bt:file-C-003-1",
+        "bt:file-C-003-2",
+        "bt:file-C-003-3",
+        "bt:file-C-003-4",
+        "bt:file-C-003-5"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-rajesh-kumar",
+        "bt:resource-vikram-singh"
+      ]
+    },
+    {
+      "@id": "bt:file-E-004-1",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_CUSTOM_ACCT_GEN_PKG.pks",
+      "bt:filePath": "XXPO_CUSTOM_ACCT_GEN_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-E-004-2",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_CUSTOM_ACCT_GEN_PKG.pkb",
+      "bt:filePath": "XXPO_CUSTOM_ACCT_GEN_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-E-004-3",
+      "@type": "bt:File",
+      "bt:fileName": "XXPO_ACCT_GEN_RULES.sql",
+      "bt:filePath": "XXPO_ACCT_GEN_RULES.sql",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:file-E-004-4",
+      "@type": "bt:File",
+      "bt:fileName": "po_account_generator_setup.doc",
+      "bt:filePath": "po_account_generator_setup.doc",
+      "bt:fileType": "bt:Documentation",
+      "bt:usedInObject": "bt:object-004"
+    },
+    {
+      "@id": "bt:object-004",
+      "@type": "bt:Enhancement",
+      "bt:riceId": "E-004",
+      "bt:objectName": "Custom Account Generator for PO",
+      "bt:objectType": "bt:ENHANCEMENT",
+      "bt:progress": 30,
+      "bt:status": "bt:BLOCKED",
+      "bt:description": "Custom workflow account generator to derive GL accounts based on item category location and cost center for PO distributions",
+      "bt:startDate": "2026-04-20",
+      "bt:targetDate": "2026-07-01",
+      "bt:hasFile": [
+        "bt:file-E-004-1",
+        "bt:file-E-004-2",
+        "bt:file-E-004-3",
+        "bt:file-E-004-4"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-priya-sharma"
+      ]
+    },
+    {
+      "@id": "bt:file-E-005-1",
+      "@type": "bt:File",
+      "bt:fileName": "XXAP_INVOICE_VALIDATION_PKG.pks",
+      "bt:filePath": "XXAP_INVOICE_VALIDATION_PKG.pks",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:file-E-005-2",
+      "@type": "bt:File",
+      "bt:fileName": "XXAP_INVOICE_VALIDATION_PKG.pkb",
+      "bt:filePath": "XXAP_INVOICE_VALIDATION_PKG.pkb",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:file-E-005-3",
+      "@type": "bt:File",
+      "bt:fileName": "XXAP_CUSTOM_VALIDATIONS.sql",
+      "bt:filePath": "XXAP_CUSTOM_VALIDATIONS.sql",
+      "bt:fileType": "bt:Database",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:file-E-005-4",
+      "@type": "bt:File",
+      "bt:fileName": "ap_validation_rules_config.xlsx",
+      "bt:filePath": "ap_validation_rules_config.xlsx",
+      "bt:fileType": "bt:TestScript",
+      "bt:usedInObject": "bt:object-005"
+    },
+    {
+      "@id": "bt:object-005",
+      "@type": "bt:Enhancement",
+      "bt:riceId": "E-005",
+      "bt:objectName": "Custom AP Invoice Validation Rules",
+      "bt:objectType": "bt:ENHANCEMENT",
+      "bt:progress": 100,
+      "bt:status": "bt:COMPLETED",
+      "bt:description": "Custom validation rules for AP invoices including tolerance checks duplicate invoice detection and mandatory field validations",
+      "bt:startDate": "2026-01-10",
+      "bt:targetDate": "2026-04-30",
+      "bt:hasFile": [
+        "bt:file-E-005-1",
+        "bt:file-E-005-2",
+        "bt:file-E-005-3",
+        "bt:file-E-005-4"
+      ],
+      "bt:assignedTo": [
+        "bt:resource-amit-patel"
+      ]
+    }
+  ]
+}
